@@ -7,16 +7,32 @@ test('sync', function (t) {
     var pending = 20;
     t.plan(pending * 2);
     
-    check(t, function end () {
+    function sync (doc) {
+        return { x : (doc.a || doc.b) + doc.c };
+    }
+    
+    check(t, sync, function end () {
         if (--pending === 0) t.end()
         else check(t, end)
     });
 });
 
-function check (t, end) {
-    var tr = transfuse(function (doc) {
-        return { x : (doc.a || doc.b) + doc.c };
+test('async', function (t) {
+    var pending = 20;
+    t.plan(pending * 2);
+    
+    function async (doc, map) {
+        map({ x : (doc.a || doc.b) + doc.c });
+    }
+    
+    check(t, async, function end () {
+        if (--pending === 0) t.end()
+        else check(t, end)
     });
+});
+
+function check (t, fn, end) {
+    var tr = transfuse(fn);
     
     var stream = {
         in : new Stream,
