@@ -17,6 +17,21 @@ test('sync', function (t) {
     });
 });
 
+test('string sync', function (t) {
+    var pending = 20;
+    t.plan(pending * 2);
+    
+    var sync = 'function (doc) {'
+        + 'return { x : (doc.a || doc.b) + doc.c }'
+        + '}'
+    ;
+    
+    check(t, sync, function end () {
+        if (--pending === 0) t.end()
+        else check(t, sync, end)
+    });
+});
+
 test('async', function (t) {
     var pending = 20;
     t.plan(pending * 2);
