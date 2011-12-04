@@ -1,6 +1,7 @@
 var JSONStream = require('JSONStream');
 var Stream = require('stream').Stream;
 var es = require('event-stream');
+var vm = require('vm');
 
 var transfuse = module.exports = function (keyPath, fn) {
     if (typeof keyPath === 'function') {
