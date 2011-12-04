@@ -13,7 +13,7 @@ test('sync', function (t) {
     
     check(t, sync, function end () {
         if (--pending === 0) t.end()
-        else check(t, end)
+        else check(t, sync, end)
     });
 });
 
@@ -22,12 +22,14 @@ test('async', function (t) {
     t.plan(pending * 2);
     
     function async (doc, map) {
-        map({ x : (doc.a || doc.b) + doc.c });
+        setTimeout(function () {
+            map({ x : (doc.a || doc.b) + doc.c });
+        }, Math.floor(Math.random() * 10 + 1));
     }
     
     check(t, async, function end () {
         if (--pending === 0) t.end()
-        else check(t, end)
+        else check(t, async, end)
     });
 });
 
@@ -48,8 +50,12 @@ function check (t, fn, end) {
     stream.out.end = function () {
         t.equal(data.length, 4);
         t.deepEqual(
-            JSON.parse(data.join('')), 
-            [ { x : 102 }, { x : 6 }, { x : 0 } ]
+            JSON.parse(data.join('')).sort(function (a, b) {
+                return a.x - b.x;
+            }), 
+            [ { x : 102 }, { x : 6 }, { x : 0 } ].sort(function (a, b) {
+                return a.x - b.x;
+            })
         );
         end();
     };
