@@ -79,6 +79,9 @@ events into an outgoing stream of "data" events with `fn`.
 
 If `fn.length === 1` use `transfuse.sync`. Otherwise use `transfuse.async`.
 
+If `fn` is a string then it should contain a function body which will be run
+with `vm.runInNewContext`.
+
 transfuse.sync(fn)
 ------------------
 

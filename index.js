@@ -27,16 +27,18 @@ transfuse.sync = transform(function (fn, doc, map) {
 
 function transform (cb) {
     return function (keyPath, fn) {
-        if (typeof keyPath === 'function') {
+        if (fn === undefined) {
             fn = keyPath;
             keyPath = undefined;
         }
         if (!keyPath) keyPath = [ /./ ];
         
         if (typeof fn !== 'function') {
-            fn = function (doc, map) {
-                return vm.runInNewContext(fn.toString(), {})
-            };
+            var fn_ = vm.runInNewContext('(' + fn.toString() + ')', {});
+            return typeof fn_ === 'function'
+                ? transfuse(keyPath, fn_)
+                : undefined
+            ;
         }
         
         return es.connect(
