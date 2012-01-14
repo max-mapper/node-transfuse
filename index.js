@@ -36,7 +36,7 @@ function transform (cb) {
         if (typeof fn !== 'function') {
             var fn_ = vm.runInNewContext('(' + fn.toString() + ')', {});
             return typeof fn_ === 'function'
-                ? transfuse(keyPath, fn_)
+                ? transfuse(keyPath, fn_, stringify)
                 : undefined
             ;
         }
